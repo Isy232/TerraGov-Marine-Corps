@@ -33,16 +33,16 @@
 					M.KnockDown(rand(1,5))
 			return
 		else
-			var/light = -1
 			var/flash = -1
-
-			light = max(-1, amount/8)
+			var/light = amount/16
+			var/medium = amount/25
+			var/heavy = amount/40
 			if (flash && flashing_factor) flash = light + 1
 
 			for(var/mob/M in viewers(8, location))
 				to_chat(M, "<span class='warning'>The solution violently explodes.</span>")
 
-			explosion(location, -1, -1, light, flash)
+			explosion(location, heavy, medium, light, flash)
 			if(light > 0) return TRUE
 
 	proc/holder_damage(var/atom/holder)

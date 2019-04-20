@@ -124,7 +124,7 @@
 /datum/chemical_reaction/glycerol
 	name = "Glycerol"
 	id = "glycerol"
-	results = list("glycerol" = 1)
+	results = list("glycerol" = 8)
 	required_reagents = list("cornoil" = 3, "sacid" = 1)
 
 /datum/chemical_reaction/nitroglycerin
@@ -135,7 +135,7 @@
 
 /datum/chemical_reaction/nitroglycerin/on_reaction(var/datum/reagents/holder, var/created_volume)
 	var/datum/effect_system/reagents_explosion/e = new()
-	e.set_up(round (created_volume/2, 1), holder.my_atom, 0, 0)
+	e.set_up(round (created_volume, 1), holder.my_atom, 0, 0)
 	e.holder_damage(holder.my_atom)
 	if(isliving(holder.my_atom))
 		e.amount *= 0.5
@@ -175,9 +175,9 @@
 
 /datum/chemical_reaction/napalm/on_reaction(var/datum/reagents/holder, var/created_volume, var/radius)
 	var/location = get_turf(holder.my_atom)
-	radius = round(created_volume/45)
+	radius = round(created_volume/40)
 	if(radius < 0) radius = 0
-	if(radius > 3) radius = 3
+	if(radius > 5) radius = 5
 
 	for(var/turf/T in range(radius,location))
 		if(T.density)

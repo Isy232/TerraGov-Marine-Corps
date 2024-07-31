@@ -335,3 +335,8 @@
   - code_imp: Cleaned up some acid code
   - balance: Plasma SMG scatter increased slightly
   - balance: Plasma SMG bouncy mode damage decreases slightly for each bounce
+2024-07-31:
+  Notamaniac:
+  - bugfix: Vindicator Minigun Powerpacks won't show up as an error on snow maps anymore
+  Wisemonster:
+  - rscdel: Removed most of the glass panes by the fire range tables in Valhalla

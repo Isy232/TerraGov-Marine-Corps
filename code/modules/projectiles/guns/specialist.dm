@@ -341,9 +341,9 @@ Note that this means that snipers will have a slowdown of 3, due to the scope
 		/obj/item/attachable/extended_barrel,
 		/obj/item/attachable/heavy_barrel,
 		/obj/item/attachable/suppressor,
+		/obj/item/attachable/bayonet/converted,
 		/obj/item/attachable/bayonet,
-		/obj/item/attachable/bayonetknife,
-		/obj/item/attachable/bayonetknife/som,
+		/obj/item/attachable/bayonet/som,
 		/obj/item/attachable/compensator,
 		/obj/item/attachable/scope,
 		/obj/item/attachable/scope/mini,
@@ -363,12 +363,12 @@ Note that this means that snipers will have a slowdown of 3, due to the scope
 
 	fire_delay = 0.4 SECONDS
 	burst_amount = 1
-	accuracy_mult = 1.2
+	accuracy_mult = 1.1
 	scatter = -3
 
 /obj/item/weapon/gun/rifle/tx8/scout
 	starting_attachment_types = list(
-		/obj/item/attachable/reddot,
+		/obj/item/attachable/magnetic_harness,
 		/obj/item/attachable/extended_barrel,
 		/obj/item/attachable/verticalgrip,
 	)
@@ -377,8 +377,8 @@ Note that this means that snipers will have a slowdown of 3, due to the scope
 // MINIGUN
 
 /obj/item/weapon/gun/minigun
-	name = "\improper MG-100 Vindicator Minigun"
-	desc = "A six barreled rotary machine gun, The ultimate in man-portable firepower, capable of laying down high velocity armor piercing rounds this thing will no doubt pack a punch.. If you don't kill all your friends with it, you can use the stablizing system of the Powerpack to fire aimed fire, but you'll move incredibly slowly."
+	name = "\improper MG-100 Vindicator minigun"
+	desc = "A six-barreled rotary machine gun, the ultimate in man-portable firepower. Capable of laying down a steady stream high velocity armor piercing rounds. Try not to kill all of your friends with it."
 	icon = 'icons/obj/items/guns/special64.dmi'
 	icon_state = "minigun"
 	worn_icon_state = "minigun"
@@ -395,7 +395,11 @@ Note that this means that snipers will have a slowdown of 3, due to the scope
 	reload_sound = 'sound/weapons/guns/interact/minigun_reload.ogg'
 	cocked_sound = 'sound/weapons/guns/interact/minigun_cocked.ogg'
 	default_ammo_type = null
-	allowed_ammo_types = list(/obj/item/ammo_magazine/minigun_powerpack)
+	allowed_ammo_types = list(
+		/obj/item/ammo_magazine/minigun_powerpack,
+		/obj/item/ammo_magazine/minigun_powerpack/fancy,
+		/obj/item/ammo_magazine/minigun_powerpack/merc,
+		)
 	w_class = WEIGHT_CLASS_HUGE
 	force = 20
 	wield_delay = 1.2 SECONDS
@@ -621,6 +625,7 @@ Note that this means that snipers will have a slowdown of 3, due to the scope
 	scatter = -100
 	placed_overlay_iconstate = "sadar"
 	windup_delay = 0.4 SECONDS
+	gun_crosshair = 'icons/UI_Icons/gun_crosshairs/explosive.dmi'
 	///removes backblast damage if false
 	var/backblastdamage = TRUE
 
@@ -653,7 +658,7 @@ Note that this means that snipers will have a slowdown of 3, due to the scope
 //RL-152 RPG
 
 /obj/item/weapon/gun/launcher/rocket/sadar
-	name = "\improper RL-152 sadar rocket launcher"
+	name = "\improper RL-152 SADAR rocket launcher"
 	desc = "The RL-152 is the primary anti-armor weapon of the TGMC. Used to take out light-tanks and enemy structures, the RL-152 rocket launcher is a dangerous weapon with a variety of combat uses. Uses a variety of 84mm rockets."
 	icon = 'icons/obj/items/guns/special64.dmi'
 	icon_state = "sadar"
@@ -880,6 +885,11 @@ Note that this means that snipers will have a slowdown of 3, due to the scope
 			human_user.update_inv_l_hand()
 		else if (src == human_user.r_hand)
 			human_user.update_inv_r_hand()
+
+/obj/item/weapon/gun/launcher/rocket/oneuse/anti_tank
+	desc = "This is the premier disposable rocket launcher used throughout the galaxy, it cannot be reloaded or unloaded on the field. This one fires an 84mm AT rocket. Spacebar to shorten or extend it to make it storeable or fireable, respectively."
+	default_ammo_type = /obj/item/ammo_magazine/rocket/oneuse/anti_tank
+	allowed_ammo_types = list(/obj/item/ammo_magazine/rocket/oneuse/anti_tank)
 
 //SOM RPG
 /obj/item/weapon/gun/launcher/rocket/som

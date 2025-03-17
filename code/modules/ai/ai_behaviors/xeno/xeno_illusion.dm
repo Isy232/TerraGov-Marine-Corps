@@ -5,7 +5,7 @@
 	/// How close a human has to be in order for illusions to react
 	var/illusion_react_range = 5
 
-/datum/ai_behavior/xeno/illusion/New(loc, parent_to_assign, escorted_atom)
+/datum/ai_behavior/xeno/illusion/New(loc, mob/parent_to_assign, atom/escorted_atom)
 	if(!escorted_atom)
 		base_action = MOVING_TO_NODE
 	..()
@@ -21,7 +21,7 @@
 				set_escorted_atom(src, victim)
 				return
 
-/datum/ai_behavior/xeno/illusion/attack_target(datum/soure, atom/attacked)
+/datum/ai_behavior/xeno/illusion/attack_target(datum/source, atom/attacked)
 	if(!attacked)
 		attacked = atom_to_walk_to
 	var/mob/illusion/illusion_parent = mob_parent

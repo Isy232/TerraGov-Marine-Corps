@@ -107,7 +107,7 @@
 	name = "interior attach point"
 	base_category = DROPSHIP_CREW_WEAPON
 	density = FALSE
-	layer = HOLOPAD_LAYER //Keeps xenos from hiding under them
+	layer = RUNE_LAYER //Keeps xenos from hiding under them
 	plane = FLOOR_PLANE //Doesn't layer under weeds unless it has this
 
 /obj/effect/attach_point/crew_weapon/dropship1
@@ -373,6 +373,7 @@
 		var/obj/new_gun = new sentry_type(src)
 		deployed_turret = new_gun.loc
 		RegisterSignal(deployed_turret, COMSIG_OBJ_DECONSTRUCT, PROC_REF(clean_refs))
+	deployed_turret.set_on(FALSE)
 
 ///This cleans the deployed_turret ref when the sentry is destroyed.
 /obj/structure/dropship_equipment/shuttle/sentry_holder/proc/clean_refs(atom/source, disassembled)
@@ -841,7 +842,7 @@
 //////////////// OTHER EQUIPMENT /////////////////
 
 /obj/structure/dropship_equipment/shuttle/operatingtable
-	name = "Dropship Operating Table Deployment System"
+	name = "\improper Dropship Operating Table Deployment System"
 	desc = "Used for advanced medical procedures. Fits on the crewserved weapon attach points of dropships. You need a powerloader to lift it."
 	equip_category = DROPSHIP_CREW_WEAPON
 	icon = 'icons/obj/surgery.dmi'
@@ -877,7 +878,7 @@
 /obj/structure/dropship_equipment/cas/weapon/bomblet_pod
 	name = "bomblet pod"
 	icon_state = "bomblet_pod"
-	desc = "A pnuematic thrower machine capable of up to 40 smaller bombs, generally  called 'bomblets'. Moving this will require some sort of lifter."
+	desc = "A pnuematic thrower machine capable of up to 40 smaller bombs, generally called 'bomblets'. Moving this will require some sort of lifter."
 	icon = 'icons/obj/structures/prop/mainship_64.dmi'
 	firing_sound = 'sound/weapons/gunship_rocketpod.ogg'
 	firing_delay = 0.5 SECONDS

@@ -30,13 +30,9 @@
 		if(CONSCIOUS)
 			GLOB.alive_xeno_list += src
 			LAZYADD(GLOB.alive_xeno_list_hive[hivenumber], src)
-			see_in_dark = xeno_caste.conscious_see_in_dark
 		if(UNCONSCIOUS)
 			GLOB.alive_xeno_list += src
 			LAZYADD(GLOB.alive_xeno_list_hive[hivenumber], src)
-			see_in_dark = xeno_caste.unconscious_see_in_dark
-		if(DEAD)
-			see_in_dark = xeno_caste.unconscious_see_in_dark
 
 	GLOB.xeno_mob_list += src
 	GLOB.round_statistics.total_xenos_created++
@@ -74,7 +70,7 @@
 	if(CONFIG_GET(flag/xenos_on_strike))
 		replace_by_ai()
 	if(z) //Larva are initiated in null space
-		SSminimaps.add_marker(src, MINIMAP_FLAG_XENO, image('icons/UI_icons/map_blips.dmi', null, xeno_caste.minimap_icon))
+		SSminimaps.add_marker(src, MINIMAP_FLAG_XENO, image('icons/UI_icons/map_blips.dmi', null, xeno_caste.minimap_icon, MINIMAP_BLIPS_LAYER))
 	handle_weeds_on_movement()
 
 	AddElement(/datum/element/footstep, footstep_type, mob_size >= MOB_SIZE_BIG ? 0.8 : 0.5)
@@ -299,7 +295,7 @@
 	return ..()
 
 
-/mob/living/carbon/xenomorph/slip(slip_source_name, stun_level, weaken_level, run_only, override_noslip, slide_steps)
+/mob/living/carbon/xenomorph/slip(slip_source_name, stun_level, paralyze_level, run_only, override_noslip, slide_steps)
 	return FALSE
 
 /mob/living/carbon/xenomorph/start_pulling(atom/movable/AM, force = move_force, suppress_message = TRUE, bypass_crit_delay = FALSE)
@@ -311,7 +307,7 @@
 		return FALSE //Incorporeal things can't grab or be grabbed.
 	if(AM.anchored)
 		return FALSE //We cannot grab anchored items.
-	if(!isliving(AM) && AM.drag_windup && !do_after(src, AM.drag_windup, NONE, AM, BUSY_ICON_HOSTILE, BUSY_ICON_HOSTILE, extra_checks = CALLBACK(src, TYPE_PROC_REF(/mob, break_do_after_checks), list("health" = src.health))))
+	if(!isliving(AM) && !SSresinshaping.active && AM.drag_windup && !do_after(src, AM.drag_windup, NONE, AM, BUSY_ICON_HOSTILE, BUSY_ICON_HOSTILE, extra_checks = CALLBACK(src, TYPE_PROC_REF(/mob, break_do_after_checks), list("health" = src.health))))
 		return //If the target is not a living mob and has a drag_windup defined, calls a do_after. If all conditions are met, it returns. If the user takes damage during the windup, it breaks the channel.
 	var/mob/living/L = AM
 	if(L.buckled)
@@ -320,7 +316,8 @@
 		if(L.stat == DEAD) //Can't drag dead human bodies.
 			to_chat(usr,span_xenowarning("This looks gross, better not touch it."))
 			return FALSE
-		pull_speed += XENO_DEADHUMAN_DRAG_SLOWDOWN
+		if(pulling != L)
+			pull_speed += XENO_DEADHUMAN_DRAG_SLOWDOWN
 	do_attack_animation(L, ATTACK_EFFECT_GRAB)
 	SEND_SIGNAL(src, COMSIG_XENOMORPH_GRAB)
 	return ..()
@@ -435,24 +432,26 @@
 		return TRUE
 	return ..()
 
-/mob/living/carbon/xenomorph/set_stat(new_stat)
-	. = ..()
-	if(isnull(.))
-		return
-	switch(stat)
-		if(UNCONSCIOUS)
-			see_in_dark = xeno_caste.unconscious_see_in_dark
-		if(DEAD, CONSCIOUS)
-			if(. == UNCONSCIOUS)
-				see_in_dark = xeno_caste.conscious_see_in_dark
-
-///Kick the player from this mob, replace it by a more competent ai
-/mob/living/carbon/xenomorph/proc/replace_by_ai()
+/mob/living/carbon/xenomorph/replace_by_ai()
 	to_chat(src, span_warning("Sorry, your skill level was deemed too low by our automatic skill check system. Your body has as such been given to a more capable brain, our state of the art AI technology piece. Do not hesitate to take back your body after you've improved!"))
 	ghostize(TRUE)//Can take back its body
 	GLOB.offered_mob_list -= src
 	AddComponent(/datum/component/ai_controller, /datum/ai_behavior/xeno)
 	a_intent = INTENT_HARM
+
+///Checks for nearby intact weeds
+/mob/living/carbon/xenomorph/proc/check_weeds(turf/T, strict_turf_check = FALSE)
+	SHOULD_BE_PURE(TRUE)
+	if(isnull(T))
+		return FALSE
+	. = TRUE
+	if(locate(/obj/fire/flamer) in T)
+		return FALSE
+	for(var/obj/alien/weeds/W in range(strict_turf_check ? 0 : 1, T ? T : get_turf(src)))
+		if(QDESTROYING(W))
+			continue
+		return
+	return FALSE
 
 /// Handles logic for weeds nearby the xeno getting removed
 /mob/living/carbon/xenomorph/proc/handle_weeds_adjacent_removed(datum/source)
@@ -516,6 +515,9 @@ Returns TRUE when loc_weeds_type changes. Returns FALSE when it doesn’t change
 
 /mob/living/carbon/xenomorph/equip_to_slot(obj/item/item_to_equip, slot, bitslot)
 	. = ..()
+	if(bitslot)
+		var/oldslot = slot
+		slot = slotbit2slotdefine(oldslot)
 	switch(slot)
 		if(SLOT_BACK)
 			back = item_to_equip
@@ -584,3 +586,19 @@ Returns TRUE when loc_weeds_type changes. Returns FALSE when it doesn’t change
 	if(!can_mount(user, TRUE))
 		return
 	INVOKE_ASYNC(src, PROC_REF(carry_target), user, TRUE)
+
+///updates the xenos glow, based on its base glow/color, and its ammo reserves. More green ammo = more green glow; more yellow = more yellow.
+/mob/living/carbon/xenomorph/proc/update_ammo_glow()
+	var/current_ammo = corrosive_ammo + neuro_ammo
+	var/ammo_glow = BOILER_LUMINOSITY_AMMO * current_ammo
+	var/glow = CEILING(BOILER_LUMINOSITY_BASE + ammo_glow, 1)
+	var/color = BOILER_LUMINOSITY_BASE_COLOR
+	if(current_ammo)
+		var/ammo_color = BlendRGB(BOILER_LUMINOSITY_AMMO_CORROSIVE_COLOR, BOILER_LUMINOSITY_AMMO_NEUROTOXIN_COLOR, neuro_ammo/current_ammo)
+		color = BlendRGB(color, ammo_color, (ammo_glow*2)/glow)
+	if(!light_on && glow >= BOILER_LUMINOSITY_THRESHOLD)
+		set_light_on(TRUE)
+	else if(glow < BOILER_LUMINOSITY_THRESHOLD && !fire_luminosity)
+		set_light_range_power_color(0, 0)
+		set_light_on(FALSE)
+	set_light_range_power_color(glow, 4, color)

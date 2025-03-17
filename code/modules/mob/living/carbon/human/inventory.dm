@@ -27,6 +27,9 @@
 				return
 
 	else //store item
+		if(I.last_equipped_slot)
+			if(equip_to_slot_if_possible(I, I.last_equipped_slot, FALSE, FALSE, FALSE))
+				return
 		if(s_active?.on_attackby(s_active, I, src)) //stored in currently open storage
 			return TRUE
 		if(slot_requested)
@@ -191,7 +194,7 @@
 		glasses = null
 		I.unequipped(src, SLOT_GLASSES)
 		var/obj/item/clothing/glasses/G = I
-		if(G.vision_flags || G.darkness_view || G.invis_override || G.invis_view || !isnull(G.lighting_alpha))
+		if(G.vision_flags || G.invis_override || G.invis_view || !isnull(G.lighting_cutoff))
 			update_sight()
 		if(!QDELETED(src))
 			update_inv_glasses()
@@ -249,6 +252,9 @@
 //set redraw_mob to 0 if you don't wish the hud to be updated - if you're doing it manually in your own proc.
 /mob/living/carbon/human/equip_to_slot(obj/item/item_to_equip, slot, bitslot = FALSE)
 	. = ..()
+	if(bitslot)
+		var/oldslot = slot
+		slot = slotbit2slotdefine(oldslot)
 	if(!has_limb_for_slot(slot))
 		return
 
@@ -290,7 +296,7 @@
 			glasses = item_to_equip
 			item_to_equip.equipped(src, slot)
 			var/obj/item/clothing/glasses/G = item_to_equip
-			if(G.vision_flags || G.darkness_view || G.invis_override || G.invis_view || !isnull(G.lighting_alpha))
+			if(G.vision_flags || G.invis_override || G.invis_view || !isnull(G.lighting_cutoff))
 				update_sight()
 			update_inv_glasses()
 		if(SLOT_GLOVES)

@@ -87,6 +87,14 @@
 
 	var/tinttotal = TINT_NONE
 
+	/// FOV view that is applied from either nativeness or traits
+	var/fov_view
+	/// Lazy list of FOV traits that will apply a FOV view when handled.
+	var/list/fov_traits
+
+	/// Is the mob looking vertically
+	var/looking_vertically = FALSE
+
 	///a list of all status effects the mob has
 	var/list/status_effects
 	///Assoc list mapping aura types to strength, based on what we've received since the last life tick. Handled in handle_status_effects()
@@ -153,3 +161,5 @@
 	var/time_entered_stasis = 0
 	///The world.time of when this mob entered a cryo tube
 	var/time_entered_cryo = 0
+	///The z level this mob is currently registered in
+	var/registered_z = null

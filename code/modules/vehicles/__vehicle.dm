@@ -43,6 +43,8 @@
 	///This vehicle will follow us when we move (like atrailer duh)
 	var/obj/vehicle/trailer
 	var/are_legs_exposed = FALSE
+	/// Whether this vehicle triggers gargoyles
+	var/trigger_gargoyle = TRUE
 
 /obj/vehicle/Initialize(mapload)
 	. = ..()
@@ -108,7 +110,6 @@
 /obj/vehicle/proc/add_occupant(mob/M, control_flags)
 	if(!istype(M) || is_occupant(M))
 		return FALSE
-
 	LAZYSET(occupants, M, NONE)
 	add_control_flags(M, control_flags)
 	after_add_occupant(M)

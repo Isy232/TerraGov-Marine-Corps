@@ -2,6 +2,8 @@
 
 //turfs with density = TRUE
 /turf/closed
+	layer = CLOSED_TURF_LAYER
+	plane = WALL_PLANE
 	density = TRUE
 	opacity = TRUE
 
@@ -30,7 +32,7 @@
 	resistance_flags = UNACIDABLE
 
 /turf/closed/mineral/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_ROCK, -10, 5, 1)
+	AddElement(/datum/element/debris, DEBRIS_ROCK, -40, 5, 1)
 
 /turf/closed/mineral/Initialize(mapload)
 	. = ..()
@@ -67,6 +69,25 @@
 			"One bite, two bites... why not just finish the whole rock?",
 			"The stone. The rock. The boulder. Its name matters not when we consume it.",
 			"Delicious, delectable, simply exquisite. Just a few more minerals and it'd be perfect...")), null, 5)
+
+/turf/closed/plasmacutter_act(mob/living/user, obj/item/I)
+	if(!isplasmacutter(I) || user.do_actions)
+		return FALSE
+	if(CHECK_BITFIELD(resistance_flags, PLASMACUTTER_IMMUNE) || CHECK_BITFIELD(resistance_flags, INDESTRUCTIBLE))
+		to_chat(user, span_warning("[I] can't cut through this!"))
+		return FALSE
+	var/obj/item/tool/pickaxe/plasmacutter/plasmacutter = I
+	if(!plasmacutter.powered || (plasmacutter.item_flags & NOBLUDGEON))
+		return FALSE
+	if(!plasmacutter.start_cut(user, name, src))
+		return FALSE
+	if(!do_after(user, PLASMACUTTER_CUT_DELAY, NONE, src, BUSY_ICON_FRIENDLY))
+		return FALSE
+
+	plasmacutter.cut_apart(user, name, src)
+	// Change targetted turf to a new one to simulate deconstruction.
+	ChangeTurf(open_turf_type)
+	return TRUE
 
 /turf/closed/mineral/smooth
 	name = "rock"
@@ -237,7 +258,7 @@
 	resistance_flags = RESIST_ALL
 
 /turf/closed/mineral/smooth/jungletree/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_LEAF, -10, 5)
+	AddElement(/datum/element/debris, DEBRIS_LEAF, -40, 5)
 
 //Ground map dense jungle
 /turf/closed/gm
@@ -251,6 +272,9 @@
 	base_icon_state = "junglewall"
 	walltype = "junglewall"
 	open_turf_type = /turf/open/ground/jungle/clear
+
+/turf/closed/gm/add_debris_element()
+	AddElement(/datum/element/debris, DEBRIS_LEAF, -40, 5)
 
 	//Not yet
 /turf/closed/gm/ex_act(severity)
@@ -315,7 +339,7 @@
 	open_turf_type = /turf/open/floor/plating/ground/ice
 
 /turf/closed/ice/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_SNOW, -10, 5, 1)
+	AddElement(/datum/element/debris, DEBRIS_SNOW, -40, 5, 1)
 
 /turf/closed/ice/single
 	icon_state = "Single"
@@ -361,24 +385,6 @@
 /turf/closed/glass/thin/intersection
 	icon_state = "Intersection"
 
-/turf/closed/attackby(obj/item/I, mob/user, params)
-	if(isplasmacutter(I) && !user.do_actions)
-		var/obj/item/tool/pickaxe/plasmacutter/P = I
-		if(CHECK_BITFIELD(resistance_flags, PLASMACUTTER_IMMUNE))
-			to_chat(user, span_warning("[P] can't cut through this!"))
-			return
-		else if(!P.start_cut(user, name, src))
-			return
-		else if(!do_after(user, PLASMACUTTER_CUT_DELAY, NONE, src, BUSY_ICON_FRIENDLY))
-			return
-		else
-			P.cut_apart(user, name, src) //purely a cosmetic effect
-
-		//change targetted turf to a new one to simulate deconstruction
-		ChangeTurf(open_turf_type)
-		return
-	return ..()
-
 //Ice Thin Wall
 /turf/closed/ice/thin
 	name = "thin ice wall"
@@ -415,7 +421,7 @@
 	open_turf_type = /turf/open/floor/plating/ground/ice
 
 /turf/closed/ice_rock/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_SNOW, -10, 5, 1)
+	AddElement(/datum/element/debris, DEBRIS_SNOW, -40, 5, 1)
 
 /turf/closed/ice_rock/single
 	icon_state = "single"
@@ -473,19 +479,11 @@
 	name = "wall"
 	icon_state = "wall1"
 	icon = 'icons/turf/shuttle.dmi'
-	plane = FLOOR_PLANE
 	resistance_flags = PLASMACUTTER_IMMUNE
+	explosion_block = 2
 
 /turf/closed/shuttle/add_debris_element()
-	AddElement(/datum/element/debris, DEBRIS_SPARKS, -15, 8, 1)
-
-/turf/closed/shuttle/re_corner/notdense
-	icon_state = "re_cornergrass"
-	density = FALSE
-
-/turf/closed/shuttle/re_corner/jungle
-	icon_state = "re_cornerjungle"
-	density = FALSE
+	AddElement(/datum/element/debris, DEBRIS_SPARKS, -40, 8, 1)
 
 /turf/closed/shuttle/diagonal
 	icon_state = "diagonalWall"
@@ -524,12 +522,10 @@
 /turf/closed/shuttle/dropship
 	icon = 'icons/turf/walls.dmi'
 	icon_state = "rasputin1"
-	plane = GAME_PLANE
 
 /turf/closed/shuttle/ert
 	icon = 'icons/turf/ert_shuttle.dmi'
 	icon_state = "stan4"
-	plane = GAME_PLANE
 	resistance_flags = RESIST_ALL
 
 /turf/closed/shuttle/ert/engines/left
@@ -554,7 +550,6 @@
 	name = "\improper Alamo"
 	icon = 'icons/turf/dropship.dmi'
 	icon_state = "1"
-	plane = GAME_PLANE
 	resistance_flags = RESIST_ALL|PLASMACUTTER_IMMUNE
 
 /turf/closed/shuttle/dropship1/transparent
@@ -743,7 +738,6 @@
 	name = "\improper Triumph"
 	icon = 'icons/turf/dropship.dmi'
 	icon_state = "1"
-	plane = GAME_PLANE
 
 /turf/closed/shuttle/dropship3/transparent
 	opacity = FALSE
@@ -752,7 +746,6 @@
 	name = "\improper Normandy"
 	icon = 'icons/turf/dropship2.dmi'
 	icon_state = "1"
-	plane = GAME_PLANE
 
 /turf/closed/shuttle/dropship2/transparent
 	opacity = FALSE
@@ -909,7 +902,6 @@
 	name = "\improper Normandy"
 	icon = 'icons/turf/dropship4.dmi'
 	icon_state = "1"
-	plane = GAME_PLANE
 
 /turf/closed/shuttle/dropship4/transparent
 	opacity = FALSE
@@ -1096,13 +1088,11 @@
 	name = "\improper Tadpole"
 	icon = 'icons/turf/dropship2.dmi'
 	icon_state = "1"
-	plane = GAME_PLANE
 
 /turf/closed/shuttle/escapepod
 	name = "wall"
 	icon = 'icons/turf/escapepods.dmi'
 	icon_state = "wall0"
-	plane = GAME_PLANE
 
 /turf/closed/shuttle/escapepod/wallone
 	icon_state = "wall1"
@@ -1148,12 +1138,3 @@
 /turf/closed/shuttle/escapeshuttle/prison
 	resistance_flags = RESIST_ALL
 	icon_state = "wall-invincible"
-
-/turf/closed/banish_space //Brazil
-	plane = PLANE_SPACE
-	layer = SPACE_LAYER
-	icon = 'icons/turf/space.dmi'
-	name = "phantom zone"
-	icon_state = "0"
-	can_bloody = FALSE
-	light_power = 0.25

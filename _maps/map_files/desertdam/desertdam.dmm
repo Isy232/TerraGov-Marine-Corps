@@ -993,7 +993,8 @@
 /obj/structure/barricade/wooden{
 	dir = 4
 	},
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_central_north)
 "ahh" = (
 /turf/open/floor/plating/ground/desertdam/asphalt/tile,
@@ -1075,7 +1076,8 @@
 	dir = 4
 	},
 /obj/structure/barricade/wooden,
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_central_north)
 "ahL" = (
 /obj/structure/largecrate/random/secure,
@@ -5349,7 +5351,8 @@
 /area/desert_dam/interior/dam_interior/south_tunnel_entrance)
 "aGD" = (
 /obj/structure/cable,
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_south)
 "aGE" = (
 /turf/open/floor/plating/ground/desertdam/asphalt/edge{
@@ -8381,7 +8384,8 @@
 /obj/structure/barricade/wooden{
 	dir = 1
 	},
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_central_north)
 "bcS" = (
 /obj/machinery/door/poddoor/mainship/open{
@@ -17122,7 +17126,7 @@
 /area/desert_dam/exterior/valley/valley_telecoms)
 "cdm" = (
 /obj/structure/platform{
-	dir = 15
+	dir = 2
 	},
 /turf/closed/wall/r_wall/chigusa,
 /area/desert_dam/interior/dam_interior/break_room)
@@ -21241,11 +21245,13 @@
 /obj/structure/barricade/wooden{
 	dir = 8
 	},
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_central_north)
 "cCS" = (
 /obj/structure/barricade/wooden,
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_central_north)
 "cCU" = (
 /obj/structure/platform_decoration{
@@ -25859,7 +25865,8 @@
 /obj/structure/barricade/wooden{
 	dir = 1
 	},
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_south)
 "dqO" = (
 /obj/structure/bed/chair/office/light{
@@ -27199,7 +27206,7 @@
 /area/desert_dam/interior/dam_interior/central_tunnel)
 "dEn" = (
 /obj/structure/platform{
-	dir = 15
+	dir = 2
 	},
 /turf/closed/wall/r_wall/chigusa,
 /area/desert_dam/interior/dam_interior/central_tunnel)
@@ -27249,7 +27256,7 @@
 /area/desert_dam/building/security/southern_hallway)
 "dEW" = (
 /obj/structure/platform{
-	dir = 15
+	dir = 2
 	},
 /turf/closed/wall{
 	name = "reinforced metal wall"
@@ -27264,7 +27271,7 @@
 "dEZ" = (
 /obj/effect/spawner/random/misc/structure/broken_reinforced_window/colonyspawn,
 /obj/structure/platform{
-	dir = 15
+	dir = 2
 	},
 /turf/open/floor/plating,
 /area/desert_dam/interior/dam_interior/break_room)
@@ -27397,13 +27404,13 @@
 "dGv" = (
 /obj/structure/cable,
 /obj/structure/platform{
-	dir = 15
+	dir = 2
 	},
 /turf/open/floor/prison/sterilewhite,
 /area/desert_dam/interior/dam_interior/central_tunnel)
 "dGA" = (
 /obj/structure/platform{
-	dir = 15
+	dir = 2
 	},
 /turf/open/floor/prison/sterilewhite,
 /area/desert_dam/interior/dam_interior/central_tunnel)
@@ -32931,8 +32938,10 @@
 /area/desert_dam/exterior/valley/north_valley_dam)
 "gIF" = (
 /obj/machinery/miner/damaged/platinum,
-/turf/open/floor/plating/ground/mars/random/sand,
-/area/desert_dam/exterior/valley/valley_crashsite)
+/turf/open/floor/prison/darkred/corners{
+	dir = 10
+	},
+/area/desert_dam/interior/lab_northeast/east_lab_security_armory)
 "gIL" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/effect/decal/cleanable/dirt,
@@ -33740,7 +33749,6 @@
 /area/desert_dam/exterior/valley/valley_civilian)
 "hjo" = (
 /obj/machinery/light,
-/obj/machinery/computer/intel_computer,
 /turf/open/floor/mainship/blue{
 	dir = 6
 	},
@@ -34454,7 +34462,8 @@
 /obj/structure/barricade/wooden{
 	dir = 4
 	},
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_south)
 "hFf" = (
 /obj/effect/ai_node,
@@ -34915,10 +34924,6 @@
 /obj/structure/cable,
 /turf/open/floor/plating/ground/desertdam/asphalt/edge,
 /area/desert_dam/exterior/landing/landing_pad_one_external)
-"hUz" = (
-/obj/machinery/miner/damaged/platinum,
-/turf/open/floor/plating/ground/mars/random/dirt,
-/area/desert_dam/exterior/valley/valley_crashsite)
 "hUA" = (
 /obj/machinery/microwave,
 /obj/structure/table/mainship,
@@ -35262,7 +35267,8 @@
 /turf/open/floor/prison,
 /area/desert_dam/interior/dam_interior/atmos_storage)
 "ihU" = (
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_central_north)
 "ihV" = (
 /obj/structure/rock/basalt/pile/alt,
@@ -36751,7 +36757,8 @@
 /turf/open/floor/prison,
 /area/desert_dam/building/warehouse/warehouse)
 "jdv" = (
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_east)
 "jdB" = (
 /obj/structure/flora/desert/cactus/multiple,
@@ -38142,12 +38149,12 @@
 /turf/open/floor/prison/plate,
 /area/desert_dam/interior/dam_interior/hanger)
 "jXc" = (
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_south)
 "jXd" = (
 /obj/structure/rack,
 /obj/item/storage/firstaid/regular,
-/obj/item/storage/pill_bottle/russian_red,
 /turf/open/floor/tile/blue/whiteblue,
 /area/desert_dam/building/medical/medsecure)
 "jXf" = (
@@ -41819,8 +41826,8 @@
 /area/desert_dam/building/medical/east_wing_hallway)
 "mrC" = (
 /obj/machinery/miner/damaged/platinum,
-/turf/open/floor/plating/ground/mars/random/sand,
-/area/desert_dam/exterior/valley/valley_wilderness)
+/turf/open/floor/prison/bright_clean/two,
+/area/desert_dam/interior/lab_northeast/east_lab_biology)
 "mrN" = (
 /obj/structure/cable,
 /turf/open/floor/plating/ground/desertdam/asphalt/open{
@@ -41860,7 +41867,7 @@
 	name = "The Titan"
 	},
 /obj/structure/platform{
-	dir = 15
+	dir = 2
 	},
 /turf/open/floor/plating/asteroidplating,
 /area/desert_dam/interior/caves/temple)
@@ -43523,12 +43530,6 @@
 /obj/effect/turf_decal/warning_stripes/thin,
 /turf/open/floor/plating,
 /area/desert_dam/building/warehouse/loading)
-"nzU" = (
-/obj/machinery/miner/damaged/platinum,
-/turf/open/floor/plating/ground/mars/random/cave{
-	dir = 5
-	},
-/area/desert_dam/interior/caves/east_caves)
 "nAy" = (
 /obj/structure/table,
 /obj/effect/spawner/random/engineering/toolbox,
@@ -45038,9 +45039,9 @@
 /turf/open/floor/wood/broken,
 /area/desert_dam/interior/caves/central_caves)
 "owP" = (
-/obj/machinery/miner/damaged/platinum,
+/obj/machinery/miner/damaged,
 /turf/open/floor/plating/ground/mars/random/sand,
-/area/desert_dam/exterior/valley/valley_medical)
+/area/desert_dam/exterior/valley/valley_crashsite)
 "oxb" = (
 /obj/effect/decal/cleanable/liquid_fuel,
 /turf/open/floor/prison,
@@ -47450,7 +47451,8 @@
 /area/desert_dam/exterior/valley/valley_medical)
 "pQc" = (
 /obj/effect/ai_node,
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_east)
 "pQe" = (
 /obj/structure/platform_decoration{
@@ -47793,8 +47795,8 @@
 /area/desert_dam/interior/lab_northeast/east_lab_containment)
 "qar" = (
 /obj/machinery/miner/damaged/platinum,
-/turf/open/floor/plating/ground/mars/random/cave,
-/area/desert_dam/interior/caves/temple)
+/turf/open/floor/prison/bright_clean,
+/area/desert_dam/interior/lab_northeast/east_lab_containment)
 "qaA" = (
 /obj/docking_port/stationary/crashmode,
 /turf/open/floor/plating/ground/desertdam/asphalt/cement_sunbleached,
@@ -48034,7 +48036,7 @@
 "qhw" = (
 /obj/structure/cable,
 /obj/structure/platform{
-	dir = 15
+	dir = 2
 	},
 /turf/open/floor/plating/ground/desertdam/asphalt/tile,
 /area/desert_dam/exterior/river/riverside_south)
@@ -52860,7 +52862,8 @@
 /area/desert_dam/exterior/valley/valley_hydro)
 "thp" = (
 /obj/item/stack/sheet/wood,
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_south)
 "thI" = (
 /obj/effect/decal/cleanable/dirt,
@@ -54778,7 +54781,8 @@
 "uqh" = (
 /obj/structure/cable,
 /obj/effect/ai_node,
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_south)
 "uqm" = (
 /obj/machinery/computer/intel_computer,
@@ -56489,7 +56493,8 @@
 /area/desert_dam/interior/dam_interior/western_dam_cave)
 "vrM" = (
 /obj/effect/ai_node,
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_south)
 "vrV" = (
 /obj/effect/turf_decal/warning_stripes/thin{
@@ -56945,10 +56950,6 @@
 /obj/structure/cable,
 /turf/open/floor/tile/dark2,
 /area/desert_dam/interior/lab_northeast/east_lab_west_entrance)
-"vGq" = (
-/obj/machinery/miner/damaged/platinum,
-/turf/open/floor/plating/ground/mars/random/sand,
-/area/desert_dam/interior/caves/central_caves)
 "vGr" = (
 /obj/structure/shuttle/engine/propulsion/burst/left,
 /turf/open/floor/plating,
@@ -57483,7 +57484,8 @@
 /area/desert_dam/interior/dam_interior/north_tunnel)
 "vYc" = (
 /obj/effect/ai_node,
-/turf/open/floor/plating/catwalk,
+/obj/structure/catwalk,
+/turf/open/floor/plating,
 /area/desert_dam/exterior/river/riverside_central_north)
 "vYm" = (
 /obj/structure/cable,
@@ -58780,6 +58782,7 @@
 /area/desert_dam/interior/dam_interior/hanger)
 "wLD" = (
 /obj/effect/ai_node,
+/obj/machinery/miner/damaged,
 /turf/open/floor/plating/ground/mars/random/cave{
 	dir = 1
 	},
@@ -96698,7 +96701,7 @@ rCV
 wjr
 bRg
 bRg
-mrC
+bRg
 bRg
 wjr
 bgH
@@ -97597,7 +97600,7 @@ amk
 amE
 aUj
 fcj
-ahr
+qar
 agQ
 kik
 amr
@@ -99053,7 +99056,7 @@ bij
 qsM
 bRg
 bRg
-mrC
+bRg
 bRg
 wjr
 dpr
@@ -101884,7 +101887,7 @@ rCV
 rCV
 mTi
 mTi
-hUz
+mTi
 mTi
 khK
 gDh
@@ -105320,7 +105323,7 @@ gbq
 qcc
 gbq
 qKx
-alI
+mrC
 ajY
 sAE
 afP
@@ -105353,7 +105356,7 @@ rCV
 mTi
 wVn
 vpK
-gIF
+aBk
 aBk
 egV
 aBk
@@ -106610,7 +106613,7 @@ cbD
 jWl
 caH
 cdw
-owP
+cdw
 cdw
 xaO
 xqW
@@ -107020,7 +107023,7 @@ aBk
 aBk
 aBk
 aBk
-aBk
+owP
 aBk
 aHb
 wbv
@@ -107952,7 +107955,7 @@ aBk
 aBk
 aBk
 aBk
-gIF
+aBk
 aBk
 aFb
 aBk
@@ -110007,7 +110010,7 @@ anT
 aod
 hHN
 lSu
-apH
+gIF
 aqd
 aqd
 anP
@@ -112137,7 +112140,7 @@ bgH
 wUw
 ucl
 aFz
-vGq
+aFz
 aFz
 bbr
 aFz
@@ -113786,7 +113789,7 @@ aFz
 aFz
 aFz
 aFz
-vGq
+aFz
 aFz
 aFz
 aFz
@@ -114519,7 +114522,7 @@ gGC
 gGC
 eUj
 sGQ
-qar
+sCp
 sCp
 dRK
 gGC
@@ -116101,7 +116104,7 @@ bAw
 bAw
 kvS
 bAw
-nzU
+lLB
 bAw
 bAw
 tEy

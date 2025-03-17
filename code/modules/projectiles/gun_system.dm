@@ -311,6 +311,8 @@
 	var/icon_overlay_x_offset = 0
 	///Whether the icon_state overlay is offset in the Y axis
 	var/icon_overlay_y_offset = 0
+	///Crosshair icon of the gun
+	var/gun_crosshair = 'icons/UI_Icons/gun_crosshairs/rifle.dmi'
 
 
 /*
@@ -368,8 +370,8 @@
 
 	///If the gun is deployable, the time it takes for the weapon to deploy.
 	var/deploy_time = 0
-	///If the gun is deployable, the time it takes for the weapon to undeploy.
-	var/undeploy_time = 0
+	///If the gun is deployable, the time it takes for the weapon to undeploy. Defaults to deploy time
+	var/undeploy_time = null
 	///If the gun is deployed, change the scatter amount by this number. Negative reduces scatter, positive adds.
 	var/deployed_scatter_change = 0
 	///Flags that the deployed sentry uses upon deployment.
@@ -407,7 +409,7 @@
 	muzzle_flash = new(src, muzzleflash_iconstate)
 
 	if(deployable_item)
-		AddComponent(/datum/component/deployable_item, deployable_item, deploy_time, undeploy_time)
+		AddComponent(/datum/component/deployable_item, deployable_item, deploy_time, isnum(undeploy_time) ? undeploy_time : deploy_time)
 
 	GLOB.nightfall_toggleable_lights += src
 
@@ -482,7 +484,7 @@
 		COMSIG_MOB_SKILLS_CHANGED,
 		COMSIG_MOB_SHOCK_STAGE_CHANGED,
 		COMSIG_HUMAN_MARKSMAN_AURA_CHANGED))
-		gun_user.client?.mouse_pointer_icon = initial(gun_user.client.mouse_pointer_icon)
+		update_mouse_pointer(TRUE)
 		SEND_SIGNAL(gun_user, COMSIG_GUN_USER_UNSET, src)
 		gun_user.hud_used?.remove_ammo_hud(src)
 		if(heat_meter && gun_user.client)
@@ -552,23 +554,19 @@
 //manages the overlays for the gun - separate from attachment overlays
 /obj/item/weapon/gun/update_overlays()
 	. = ..()
+	//magazines overlays
+	attachment_overlays[ATTACHMENT_SLOT_MAGAZINE] = null
+	if(CHECK_BITFIELD(reciever_flags, AMMO_RECIEVER_MAGAZINES) && length(chamber_items))
+		var/image/mag_overlay = get_magazine_overlay(chamber_items[current_chamber_position])
+		if(mag_overlay)
+			attachment_overlays[ATTACHMENT_SLOT_MAGAZINE] = mag_overlay
+			. += mag_overlay
+
 	//ammo level overlays
 	if(ammo_level_icon && length(chamber_items) && rounds > 0 && chamber_items[current_chamber_position].loc == src)
-		var/remaining = CEILING((rounds /(max_rounds)) * 100, 25)
+		var/remaining = CEILING(min(rounds / max_rounds, 1) * 100, 25)
 		var/image/ammo_overlay = image(icon, icon_state = "[ammo_level_icon]_[remaining]", pixel_x = icon_overlay_x_offset, pixel_y = icon_overlay_y_offset)
 		. += ammo_overlay
-
-	//magazines overlays
-	var/image/overlay = attachment_overlays[ATTACHMENT_SLOT_MAGAZINE]
-	if(!CHECK_BITFIELD(reciever_flags, AMMO_RECIEVER_MAGAZINES) || !length(chamber_items))
-		attachment_overlays[ATTACHMENT_SLOT_MAGAZINE] = null
-		return
-	if(!get_magazine_overlay(chamber_items[current_chamber_position]))
-		return
-	var/obj/item/current_mag = chamber_items[current_chamber_position]
-	overlay = get_magazine_overlay(current_mag)
-	attachment_overlays[ATTACHMENT_SLOT_MAGAZINE] = overlay
-	. += overlay
 
 /obj/item/weapon/gun/update_item_state()
 	var/current_state = worn_icon_state
@@ -690,8 +688,10 @@
 /obj/item/weapon/gun/toggle_wielded(user, wielded)
 	if(wielded)
 		item_flags |= WIELDED
+		update_mouse_pointer()
 	else
 		item_flags &= ~(WIELDED|FULLY_WIELDED)
+		update_mouse_pointer(TRUE)
 
 //----------------------------------------------------------
 			//							    \\
@@ -752,7 +752,8 @@
 	SEND_SIGNAL(src, COMSIG_GUN_FIRE)
 	if(master_gun)
 		SEND_SIGNAL(gun_user, COMSIG_MOB_ATTACHMENT_FIRED, target, src, master_gun)
-	gun_user?.client?.mouse_pointer_icon = 'icons/effects/supplypod_target.dmi'
+	update_mouse_pointer()
+	return TRUE
 
 ///Set the target and take care of hard delete
 /obj/item/weapon/gun/proc/set_target(atom/object)
@@ -780,7 +781,8 @@
 /obj/item/weapon/gun/proc/stop_fire()
 	SIGNAL_HANDLER
 	active_attachable?.stop_fire()
-	gun_user?.client?.mouse_pointer_icon = initial(gun_user.client.mouse_pointer_icon)
+	if(!(item_flags & WIELDED))
+		update_mouse_pointer(TRUE)
 	if(!HAS_TRAIT(src, TRAIT_GUN_BURST_FIRING))
 		reset_fire()
 	SEND_SIGNAL(src, COMSIG_GUN_STOP_FIRE)
@@ -790,12 +792,13 @@
 	shots_fired = 0//Let's clean everything
 	set_target(null)
 	windup_checked = WEAPON_WINDUP_NOT_CHECKED
+	if(!(item_flags & WIELDED))
+		update_mouse_pointer(TRUE)
 	if(dual_wield)
 		modify_fire_delay(-fire_delay + fire_delay/(1 + akimbo_additional_delay)) // Removes the additional delay from auto_fire
 		modify_auto_burst_delay(-autoburst_delay + autoburst_delay/(1 + akimbo_additional_delay))
 		dual_wield = FALSE
 		setup_bullet_accuracy()
-	gun_user?.client?.mouse_pointer_icon = initial(gun_user.client.mouse_pointer_icon)
 
 ///Inform the gun if he is currently bursting, to prevent reloading
 /obj/item/weapon/gun/proc/set_bursting(bursting)
@@ -809,7 +812,8 @@
 /obj/item/weapon/gun/proc/change_target(datum/source, atom/src_object, atom/over_object, turf/src_location, turf/over_location, src_control, over_control, params)
 	SIGNAL_HANDLER
 	set_target(get_turf_on_clickcatcher(over_object, gun_user, params))
-	gun_user?.face_atom(target)
+	if(!HAS_TRAIT(gun_user, TRAIT_INCAPACITATED))
+		gun_user?.face_atom(target)
 
 
 
@@ -878,7 +882,7 @@
 			playsound(src, empty_sound, 25, 1)
 			unload(after_fire = TRUE)
 	update_ammo_count()
-	gun_user?.hud_used.update_ammo_hud(src, get_ammo_list(), get_display_ammo_count())
+	gun_user?.hud_used?.update_ammo_hud(src, get_ammo_list(), get_display_ammo_count())
 	update_icon()
 	if(dual_wield && (gun_firemode == GUN_FIREMODE_SEMIAUTO || gun_firemode == GUN_FIREMODE_BURSTFIRE))
 		var/obj/item/weapon/gun/inactive_gun = gun_user.get_inactive_held_item()
@@ -1122,7 +1126,7 @@
 		user.apply_damage(projectile_to_fire.damage * 3, projectile_to_fire.ammo.damage_type, "head", 0, TRUE)
 		user.apply_damage(200, OXY) //In case someone tried to defib them. Won't work.
 		user.death()
-		to_chat(user, span_highdanger("Your life flashes before you as your spirit is torn from your body!"))
+		to_chat(user, span_userdanger("Your life flashes before you as your spirit is torn from your body!"))
 		user.ghostize(FALSE) //No return.
 		ENABLE_BITFIELD(gun_features_flags, GUN_CAN_POINTBLANK)
 		return
@@ -1617,7 +1621,7 @@
 				new_rounds++
 		rounds = new_rounds
 		max_rounds = max_chamber_items + 1
-		gun_user?.hud_used.update_ammo_hud(src, get_ammo_list(), get_display_ammo_count())
+		gun_user?.hud_used?.update_ammo_hud(src, get_ammo_list(), get_display_ammo_count())
 		return
 	var/total_rounds
 	var/total_max_rounds
@@ -1628,7 +1632,7 @@
 	if(!CHECK_BITFIELD(reciever_flags, AMMO_RECIEVER_DO_NOT_EMPTY_ROUNDS_AFTER_FIRE))
 		rounds += in_chamber ? rounds_per_shot : 0
 	max_rounds = total_max_rounds
-	gun_user?.hud_used.update_ammo_hud(src, get_ammo_list(), get_display_ammo_count())
+	gun_user?.hud_used?.update_ammo_hud(src, get_ammo_list(), get_display_ammo_count())
 
 ///Checks to see if the current object in chamber is a worn magazine and if so unloads it
 /obj/item/weapon/gun/proc/drop_connected_mag(datum/source, mob/user)
@@ -1886,6 +1890,15 @@
 	if(!QDELETED(flash_loc))
 		flash_loc.vis_contents -= muzzle_flash
 	muzzle_flash.applied = FALSE
+
+///Updates the current mouse pointer to use the gun crosshair or not
+/obj/item/weapon/gun/proc/update_mouse_pointer(reset)
+	if(reset)
+		gun_user?.client?.mouse_pointer_icon = initial(gun_user.client.mouse_pointer_icon)
+		if(master_gun && (master_gun.item_flags & WIELDED))
+			gun_user?.client?.mouse_pointer_icon = master_gun.gun_crosshair
+		return
+	gun_user?.client?.mouse_pointer_icon = gun_crosshair
 
 //For letting xenos turn off the flashlights on any guns left lying around.
 /obj/item/weapon/gun/attack_alien(mob/living/carbon/xenomorph/xeno_attacker, damage_amount = xeno_attacker.xeno_caste.melee_damage, damage_type = BRUTE, armor_type = MELEE, effects = TRUE, armor_penetration = xeno_attacker.xeno_caste.melee_ap, isrightclick = FALSE)

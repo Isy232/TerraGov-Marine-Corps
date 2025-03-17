@@ -3,6 +3,10 @@
 #define HAS_OVERLAY (1<<1)
 #define CRITICAL_STRUCTURE (1<<2)
 #define DEPART_DESTRUCTION_IMMUNE (1<<3)
+///Structure will warn when hostiles are nearby
+#define XENO_STRUCT_WARNING_RADIUS (1<<4)
+///Structure will warn when damaged
+#define XENO_STRUCT_DAMAGE_ALERT (1<<5)
 
 //Weeds defines
 #define WEED "weed sac"
@@ -64,8 +68,8 @@ GLOBAL_LIST_INIT(weed_type_list, typecacheof(list(
 
 //List of weeds with probability of spawning
 GLOBAL_LIST_INIT(weed_prob_list, list(
-	/obj/alien/weeds/node = 80,
-	/obj/alien/weeds/node/sticky = 5,
+	/obj/alien/weeds/node = 5,
+	/obj/alien/weeds/node/sticky = 85,
 	/obj/alien/weeds/node/resting = 10,
 ))
 
@@ -210,3 +214,12 @@ GLOBAL_LIST_INIT(xeno_ai_spawnable, list(
 
 /// Life runs every 2 seconds, but we don't want to multiply all healing by 2 due to seconds_per_tick
 #define XENO_PER_SECOND_LIFE_MOD 0.5
+
+//How long the alert directional pointer lasts when structures are damaged
+#define XENO_STRUCTURE_DAMAGE_POINTER_DURATION 10 SECONDS
+///How frequently the damage alert can go off
+#define XENO_STRUCTURE_HEALTH_ALERT_COOLDOWN 30 SECONDS
+///How frequently the proximity alert can go off
+#define XENO_STRUCTURE_DETECTION_COOLDOWN 30 SECONDS
+///Proxy detection radius
+#define XENO_STRUCTURE_DETECTION_RANGE 10

@@ -410,7 +410,7 @@
 	if(prefs.lastchangelog != GLOB.changelog_hash)
 		prefs.lastchangelog = GLOB.changelog_hash
 		prefs.save_preferences()
-		winset(src, "infowindow.changelog", "font-style=;")
+		winset(src, "infobuttons.changelog", "font-style=;")
 
 /client/verb/hotkeys_help()
 	set name = "Hotkeys"
@@ -896,11 +896,6 @@
 
 	clear_important_client_contents()
 	canon_client = null
-
-/mob/on_changed_z_level(turf/old_turf, turf/new_turf, same_z_layer, notify_contents = TRUE)
-	. = ..()
-	if(!same_z_layer)
-		relayer_fullscreens()
 
 /mob/proc/point_to_atom(atom/pointed_atom)
 	var/turf/tile = get_turf(pointed_atom)

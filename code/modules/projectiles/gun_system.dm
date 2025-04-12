@@ -835,7 +835,8 @@
 		return NONE
 	if(windup_delay && windup_checked == WEAPON_WINDUP_NOT_CHECKED)
 		windup_checked = WEAPON_WINDUP_CHECKING
-		playsound(loc, windup_sound, 30, TRUE)
+		if(windup_sound)
+			playsound(loc, windup_sound, 30, TRUE)
 		if(!gun_user)
 			addtimer(CALLBACK(src, PROC_REF(fire_after_autonomous_windup)), windup_delay)
 			return NONE
@@ -959,72 +960,72 @@
 			set_light_range(muzzle_flash_lum)
 			set_light_color(muzzle_flash_color)
 			set_light_on(TRUE)
-			addtimer(CALLBACK(src, PROC_REF(reset_light_range), prev_light), 1 SECONDS)
+			addtimer(CALLBACK(src, PROC_REF(reset_light_range), prev_light), 0.1 SECONDS)
 		//Offset the pixels.
 		switch(firing_angle)
 			if(0, 360)
 				muzzle_flash.pixel_x = 0
-				muzzle_flash.pixel_y = 8
+				muzzle_flash.pixel_y = 13
 				muzzle_flash.layer = initial(muzzle_flash.layer)
 			if(1 to 44)
-				muzzle_flash.pixel_x = round(4 * ((firing_angle) / 45))
-				muzzle_flash.pixel_y = 8
+				muzzle_flash.pixel_x = round(6 * ((firing_angle) / 45))
+				muzzle_flash.pixel_y = 13
 				muzzle_flash.layer = initial(muzzle_flash.layer)
 			if(45)
-				muzzle_flash.pixel_x = 8
-				muzzle_flash.pixel_y = 8
+				muzzle_flash.pixel_x = 13
+				muzzle_flash.pixel_y = 13
 				muzzle_flash.layer = initial(muzzle_flash.layer)
 			if(46 to 89)
-				muzzle_flash.pixel_x = 8
-				muzzle_flash.pixel_y = round(4 * ((90 - firing_angle) / 45))
+				muzzle_flash.pixel_x = 13
+				muzzle_flash.pixel_y = round(6 * ((90 - firing_angle) / 45))
 				muzzle_flash.layer = initial(muzzle_flash.layer)
 			if(90)
-				muzzle_flash.pixel_x = 8
+				muzzle_flash.pixel_x = 13
 				muzzle_flash.pixel_y = 0
 				muzzle_flash.layer = initial(muzzle_flash.layer)
 			if(91 to 134)
-				muzzle_flash.pixel_x = 8
-				muzzle_flash.pixel_y = round(-3 * ((firing_angle - 90) / 45))
+				muzzle_flash.pixel_x = 13
+				muzzle_flash.pixel_y = round(-4 * ((firing_angle - 90) / 45))
 				muzzle_flash.layer = initial(muzzle_flash.layer)
 			if(135)
-				muzzle_flash.pixel_x = 8
-				muzzle_flash.pixel_y = -6
+				muzzle_flash.pixel_x = 13
+				muzzle_flash.pixel_y = -10
 				muzzle_flash.layer = initial(muzzle_flash.layer)
 			if(136 to 179)
 				muzzle_flash.pixel_x = round(4 * ((180 - firing_angle) / 45))
-				muzzle_flash.pixel_y = -6
+				muzzle_flash.pixel_y = -12
 				muzzle_flash.layer = ABOVE_MOB_LAYER
 			if(180)
 				muzzle_flash.pixel_x = 0
-				muzzle_flash.pixel_y = -6
+				muzzle_flash.pixel_y = -12
 				muzzle_flash.layer = ABOVE_MOB_LAYER
 			if(181 to 224)
 				muzzle_flash.pixel_x = round(-6 * ((firing_angle - 180) / 45))
-				muzzle_flash.pixel_y = -6
+				muzzle_flash.pixel_y = -12
 				muzzle_flash.layer = ABOVE_MOB_LAYER
 			if(225)
-				muzzle_flash.pixel_x = -6
-				muzzle_flash.pixel_y = -6
+				muzzle_flash.pixel_x = -12
+				muzzle_flash.pixel_y = -12
 				muzzle_flash.layer = initial(muzzle_flash.layer)
 			if(226 to 269)
-				muzzle_flash.pixel_x = -6
-				muzzle_flash.pixel_y = round(-6 * ((270 - firing_angle) / 45))
+				muzzle_flash.pixel_x = -12
+				muzzle_flash.pixel_y = round(-12 * ((270 - firing_angle) / 45))
 				muzzle_flash.layer = initial(muzzle_flash.layer)
 			if(270)
-				muzzle_flash.pixel_x = -6
+				muzzle_flash.pixel_x = -12
 				muzzle_flash.pixel_y = 0
 				muzzle_flash.layer = initial(muzzle_flash.layer)
-			if(271 to 314)
-				muzzle_flash.pixel_x = -6
+			if(271 to 313)
+				muzzle_flash.pixel_x = -12
 				muzzle_flash.pixel_y = round(8 * ((firing_angle - 270) / 45))
 				muzzle_flash.layer = initial(muzzle_flash.layer)
 			if(315)
-				muzzle_flash.pixel_x = -6
-				muzzle_flash.pixel_y = 8
+				muzzle_flash.pixel_x = -12
+				muzzle_flash.pixel_y = 13
 				muzzle_flash.layer = initial(muzzle_flash.layer)
 			if(316 to 359)
-				muzzle_flash.pixel_x = round(-6 * ((360 - firing_angle) / 45))
-				muzzle_flash.pixel_y = 8
+				muzzle_flash.pixel_x = round(-12 * ((360 - firing_angle) / 45))
+				muzzle_flash.pixel_y = 13
 				muzzle_flash.layer = initial(muzzle_flash.layer)
 
 		muzzle_flash.transform = null
@@ -1323,9 +1324,12 @@
 		if(reload_delay > 0 && user && !force)
 			reload_delay -= reload_delay * 0.25 * min(user.skills.getRating(gun_skill_category), 2)
 			to_chat(user, span_notice("You begin reloading [src] with [new_mag]."))
+			ADD_TRAIT(user, TRAIT_IS_RELOADING, REF(src))
 			if(!do_after(user, reload_delay, NONE, user))
+				REMOVE_TRAIT(user, TRAIT_IS_RELOADING, REF(src))
 				to_chat(user, span_warning("Your reload was interupted!"))
 				return FALSE
+			REMOVE_TRAIT(user, TRAIT_IS_RELOADING, REF(src))
 		if(CHECK_BITFIELD(reciever_flags, AMMO_RECIEVER_ROTATES_CHAMBER))
 			for(var/i = 1, i <= length(chamber_items), i++)
 				if(chamber_items[i])
@@ -1565,7 +1569,7 @@
 	if(!new_ammo)
 		return
 	var/projectile_type = CHECK_BITFIELD(initial(new_ammo.ammo_behavior_flags), AMMO_HITSCAN) ? /obj/projectile/hitscan : /obj/projectile
-	var/obj/projectile/projectile = new projectile_type(null, initial(new_ammo.hitscan_effect_icon))
+	var/obj/projectile/projectile = new projectile_type(src, initial(new_ammo.hitscan_effect_icon))
 	projectile.generate_bullet(new_ammo)
 	return projectile
 

@@ -119,6 +119,7 @@
 
 /datum/action/ability/fail_activate()
 	update_button_icon()
+	return FALSE
 
 ///ability cost override allows for actions/abilities to override the normal ability costs
 /datum/action/ability/proc/succeed_activate(ability_cost_override)
@@ -203,9 +204,9 @@
 	if(!.)
 		return
 	var/mob/living/carbon/carbon_owner = owner
-	if(carbon_owner.selected_ability == src)
-		return
 	if(carbon_owner.selected_ability)
+		if(carbon_owner.selected_ability == src)
+			return
 		carbon_owner.selected_ability.deselect()
 	select()
 
